@@ -22,15 +22,15 @@ class Line(object):
 
 #---------------------------------------------------------------#
 
-def find_lines(center, minDt, maxDt):
-    ang = uniform(minDt, maxDt / 2)
+def find_lines(center, vari, num):
     lines = []
-    while ang <= 2 * pi:
-        lines.append(Line(center[0], center[1], ang))
-        ang += uniform(minDt, maxDt)
+    for x in range(num):
+        lines.append(Line(center[0], center[1], ((2 * pi / num) * x) + uniform(-vari / 2, vari / 2)))
     return lines
 
+
 def fill_colors(thetas, pxs, width, height, ax, ay):
+    pallet = spectrum_pallet(len(thetas))
     for x in range(width):
         for y in range(height):
             rx = x - ax
@@ -42,11 +42,16 @@ def fill_colors(thetas, pxs, width, height, ax, ay):
                         curr_t += 2 * pi
                 else:
                     curr_t = (pi/2) if ry > 0 else (3 * pi/2)
+                mul = pos_in(curr_t, thetas)
+                pxs[x, y] = pallet[mul]
 
-                mul = pos_in(curr_t, thetas) + 1
-                #print(rx, ry, curr_t)
-                pxs[x, y] = (10 * mul, 30 * mul, 50 * mul)
-
+def spectrum_pallet(n):
+    base = (randint(0, 255), randint(0, 255/n), randint(0, 255/n))
+    top = (randint(base[0], 255), randint(base[1], 255), randint(base[2], 255))
+    pallet = []
+    for i in range(1, n + 1):
+        pallet.append(tuple( for x in base))
+    return pallet
 
 def pos_in(num, arr):
     for i in range(len(arr)):
@@ -60,13 +65,13 @@ height = 1080
 img = Image.new("RGBA", (width, height), "white")
 pxs = img.load()
 
-ax = randint(0, width - 1)
-ay = randint(0, height - 1)
+ax = randint(width / 4,  3 * width / 4)
+ay = randint(height / 4,  3 * height / 4)
 
-lines = find_lines((ax, ay), pi/16, pi/2)
+lines = find_lines((ax, ay), pi/4, 6)
 thetas = []
 for l in lines:
-    l.print_line(pxs, width, height, 2)
+    l.print_line(pxs, width, height, 0)
     thetas.append(l.t)
 
 #print(thetas)
