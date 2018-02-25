@@ -1,10 +1,3 @@
-def offset(arr, n):
-    narr = []
-    for i in range(n, len(arr)):
-        narr.append(arr[i])
-    for i in range(n):
-        narr.append(arr[i])
-    return narr
+import pallet_maker
 
-arr = [0, 1, 2, 3, 4]
-print offset(arr, 6)
+print pallet_maker.spectrum_pallet(5, 50, (1, 1, 1))

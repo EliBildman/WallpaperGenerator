@@ -2,6 +2,7 @@ from PIL import Image
 from math import sin, cos, atan, pi
 from random import uniform, randint
 import sys
+import pallet_maker
 
 class Line(object):
 
@@ -30,8 +31,7 @@ def find_lines(center, vari, num):
     return lines
 
 
-def fill_colors(thetas, pxs, width, height, ax, ay):
-    pallet = spectrum_pallet(len(thetas) / 2 + 1)
+def fill_colors(thetas, pxs, width, height, ax, ay, pallet):
     offset = randint(0, len(thetas) - 1)
     for x in range(width):
         for y in range(height):
@@ -48,14 +48,6 @@ def fill_colors(thetas, pxs, width, height, ax, ay):
                 mul = (pos_in(curr_t, thetas) + offset) % len(thetas)
                 pxs[x, y] = pallet[abs(len(pallet) - 1 - mul)]
 
-def spectrum_pallet(n):
-    min_range = 50
-    base = tuple(randint(0, 255 - min_range) for i in range(3))
-    top = tuple(randint(x + min_range, 255) for x in base)
-    pallet = []
-    for i in range(0, n):
-        pallet.append(tuple(base[j] + ((top[j] - base[j]) / n) * i for j in range(len(base))))
-    return pallet
 
 def offset(arr, n):
     narr = []
@@ -73,27 +65,28 @@ def pos_in(num, arr):
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------#
 
-width = sys.argv[1]
-height = sys.argv[2]
-line_thickness = 0
-image_name = sys.argv[3]
-num_lines = randint(3, 8) * 2
+# width = int(sys.argv[1])
+# height = int(sys.argv[2])
+# line_thickness = 0
+# base_name = sys.argv[3]
+# num_lines = randint(4, 8) * 2
+# num_images = int(sys.argv[4])
+# min_color_range = 50
 
-img = Image.new("RGBA", (width, height), "white")
-pxs = img.load()
+def create_design(width, height, line_thickness, file_name, num_lines, min_color_range):
+    img = Image.new("RGBA", (width, height), "white")
+    pxs = img.load()
 
-ax = randint(width / 4,  3 * width / 4)
-ay = randint(height / 4,  3 * height / 4)
+    ax = randint(width / 4,  3 * width / 4)
+    ay = randint(height / 4,  3 * height / 4)
 
-lines = find_lines((ax, ay), (2*pi / num_lines) - 0.01, num_lines)
-thetas = []
-for l in lines:
-    l.print_line(pxs, width, height, line_thickness)
-    thetas.append(l.t)
+    lines = find_lines((ax, ay), (2*pi / num_lines) - 0.01, num_lines)
+    thetas = []
+    for l in lines:
+        l.print_line(pxs, width, height, line_thickness)
+        thetas.append(l.t)
 
-fill_colors(thetas, pxs, width, height, ax, ay)
+    pallet = pallet_maker.spectrum_pallet(num_lines / 2 + 1, min_color_range)
+    fill_colors(thetas, pxs, width, height, ax, ay, pallet)
 
-if image_name == None:
-    image_name = "design"
-
-img.save(image_name + ".png", "PNG")
+    img.save(file_name + ".png", "PNG")
