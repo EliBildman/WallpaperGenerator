@@ -1,6 +1,7 @@
 from PIL import Image
 from math import sin, cos, atan, pi
 from random import uniform, randint
+import sys
 
 class Line(object):
 
@@ -31,7 +32,7 @@ def find_lines(center, vari, num):
 
 def fill_colors(thetas, pxs, width, height, ax, ay):
     pallet = spectrum_pallet(len(thetas) / 2 + 1)
-    offset = randint(0, len(pallet) - 1)
+    offset = randint(0, len(thetas) - 1)
     for x in range(width):
         for y in range(height):
             rx = x - ax
@@ -44,17 +45,16 @@ def fill_colors(thetas, pxs, width, height, ax, ay):
                 else:
                     curr_t = (pi/2) if ry > 0 else (3 * pi/2)
 
-                mul = (pos_in(curr_t, thetas) + 1) % len(pallet)
+                mul = (pos_in(curr_t, thetas) + offset) % len(thetas)
                 pxs[x, y] = pallet[abs(len(pallet) - 1 - mul)]
 
 def spectrum_pallet(n):
     min_range = 50
-    base = (randint(0, 255 - min_range), randint(0, 255 - min_range), randint(0, 255 - min_range))
-    top = (randint(base[0] + min_range, 255), randint(base[1] + min_range, 255), randint(base[2] + min_range, 255))
+    base = tuple(randint(0, 255 - min_range) for i in range(3))
+    top = tuple(randint(x + min_range, 255) for x in base)
     pallet = []
     for i in range(0, n):
         pallet.append(tuple(base[j] + ((top[j] - base[j]) / n) * i for j in range(len(base))))
-    print(pallet)
     return pallet
 
 def offset(arr, n):
@@ -73,8 +73,11 @@ def pos_in(num, arr):
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------#
 
-width = 1920
-height = 1080
+width = sys.argv[1]
+height = sys.argv[2]
+line_thickness = 0
+image_name = sys.argv[3]
+num_lines = randint(3, 8) * 2
 
 img = Image.new("RGBA", (width, height), "white")
 pxs = img.load()
@@ -82,12 +85,15 @@ pxs = img.load()
 ax = randint(width / 4,  3 * width / 4)
 ay = randint(height / 4,  3 * height / 4)
 
-lines = find_lines((ax, ay), pi/4, 6)
+lines = find_lines((ax, ay), (2*pi / num_lines) - 0.01, num_lines)
 thetas = []
 for l in lines:
-    l.print_line(pxs, width, height, 0)
+    l.print_line(pxs, width, height, line_thickness)
     thetas.append(l.t)
 
 fill_colors(thetas, pxs, width, height, ax, ay)
 
-img.save("filled.png", "PNG")
+if image_name == None:
+    image_name = "design"
+
+img.save(image_name + ".png", "PNG")
