@@ -20,7 +20,7 @@ class Line(object):
                         pxs[x, y] = (0, 0, 0)
             mul += 1
 
-#---------------------------------------------------------------#
+#-----------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def find_lines(center, vari, num):
     lines = []
@@ -30,7 +30,8 @@ def find_lines(center, vari, num):
 
 
 def fill_colors(thetas, pxs, width, height, ax, ay):
-    pallet = spectrum_pallet(len(thetas))
+    pallet = spectrum_pallet(len(thetas) / 2 + 1)
+    offset = randint(0, len(pallet) - 1)
     for x in range(width):
         for y in range(height):
             rx = x - ax
@@ -42,22 +43,35 @@ def fill_colors(thetas, pxs, width, height, ax, ay):
                         curr_t += 2 * pi
                 else:
                     curr_t = (pi/2) if ry > 0 else (3 * pi/2)
-                mul = pos_in(curr_t, thetas)
-                pxs[x, y] = pallet[mul]
+
+                mul = (pos_in(curr_t, thetas) + 1) % len(pallet)
+                pxs[x, y] = pallet[abs(len(pallet) - 1 - mul)]
 
 def spectrum_pallet(n):
-    base = (randint(0, 255), randint(0, 255/n), randint(0, 255/n))
-    top = (randint(base[0], 255), randint(base[1], 255), randint(base[2], 255))
+    min_range = 50
+    base = (randint(0, 255 - min_range), randint(0, 255 - min_range), randint(0, 255 - min_range))
+    top = (randint(base[0] + min_range, 255), randint(base[1] + min_range, 255), randint(base[2] + min_range, 255))
     pallet = []
-    for i in range(1, n + 1):
-        pallet.append(tuple( for x in base))
+    for i in range(0, n):
+        pallet.append(tuple(base[j] + ((top[j] - base[j]) / n) * i for j in range(len(base))))
+    print(pallet)
     return pallet
+
+def offset(arr, n):
+    narr = []
+    for i in range(n, len(arr)):
+        narr.append(arr[i])
+    for i in range(n):
+        narr.append(arr[i])
+    return narr
 
 def pos_in(num, arr):
     for i in range(len(arr)):
         if arr[i] > num:
             return i
     return 0
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------#
 
 width = 1920
 height = 1080
@@ -73,10 +87,6 @@ thetas = []
 for l in lines:
     l.print_line(pxs, width, height, 0)
     thetas.append(l.t)
-
-#print(thetas)
-
-img.save("skeleton.png", "PNG")
 
 fill_colors(thetas, pxs, width, height, ax, ay)
 
