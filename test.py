@@ -1,3 +1,3 @@
-import pallet_maker
+import random
 
-print pallet_maker.spectrum_pallet(5, 50, (1, 1, 1))
+print random.randint(1, 0)
