@@ -3,26 +3,7 @@ from math import sin, cos, atan, pi
 from random import uniform, randint
 import sys
 import pallet_maker
-
-class Line(object):
-
-    def __init__(self, ax, ay, t):
-        self.ax = ax # start x
-        self.ay = ay # start y
-        self.t = t # theta
-
-    def print_line(self, pxs, w, h, thickness):
-        mul = 0
-        while 0 <= self.ax + int(cos(self.t) * mul) < w and 0 <= self.ay + int(sin(self.t) * mul) < h:
-            xpos = self.ax + int(cos(self.t) * mul)
-            ypos = self.ay + int(sin(self.t) * mul)
-            for x in range(xpos - thickness, xpos + thickness):
-                for y in range(ypos - thickness, ypos + thickness):
-                    if 0 <= x < w and 0 <= y < h:
-                        pxs[x, y] = (0, 0, 0)
-            mul += 1
-
-#-----------------------------------------------------------------------------------------------------------------------------------------------------#
+from shapes import Line
 
 def find_lines(center, vari, num):
     lines = []

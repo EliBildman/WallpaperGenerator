@@ -1,29 +1,6 @@
 from PIL import Image
 from random import randint
-
-class Rectangle(object):
-
-    def __init__(self, point1, point2):
-        self.ax = point1[0] #lower left
-        self.ay = point1[1]
-        self.bx = point2[0] #upper right
-        self.by = point2[1]
-
-    def collides_with(self, other):
-        return (self.ax <= other.ax <= self.bx or other.ax <= self.ax <= other.bx) and (self.ay <= other.ay <= self.by or other.ay <= self.ay <= other.by)
-
-    def contains_point(self, point):
-        return self.ax <= point[0] <= self.bx and self.ay <= point[1] <= self.by
-
-    def print_rec(self, pxs, color):
-        for x in range(self.bx - self.ax + 1):
-            pxs[self.ax + x, self.ay] = color
-            pxs[self.ax + x, self.by] = color
-        for y in range(self.by - self.ay + 1):
-            pxs[self.ax, self.ay + y] = color
-            pxs[self.bx, self.ay + y] = color
-
-#-----------------------------------------------------------------------------------------------------------------------------------------------------#
+from shapes import Rectangle
 
 def rand_rec(*args):
     w = args[0]
