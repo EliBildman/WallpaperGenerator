@@ -19,10 +19,20 @@ class Line(object):
 class Line_Seg(object):
 
     def __init__(self, point_a, point_b):
+        self.points = self.__find_points(point_a, point_b)
 
 
     def __find_points(self, p1, p2):
-        
+        points = []
+        m = (p2[1] - p1[1]) / (p2[0] - p1[0])
+        for x in range(p1[0], p2[0]):
+            for y in range(p1[1] + int(m * x), p1[1] + int(m * (x + 1))):
+                points.append((x, y))
+
+    def draw(self, pxs, color):
+        for point in points:
+            pxs[point[0], point[1]] = color
+
 
 class Rectangle(object):
 
@@ -53,5 +63,6 @@ class NGon(object):
         self.points = points
 
     def outline(self, color):
-
+        None
     def fill(self, color):
+        None
