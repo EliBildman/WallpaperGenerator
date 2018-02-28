@@ -1,3 +1,5 @@
+from math import sin, cos, atan
+
 class Line(object):
 
     def __init__(self, ax, ay, t):
@@ -24,12 +26,10 @@ class Line_Seg(object):
 
     def __find_points(self, p1, p2):
         points = []
-        m = float(p2[1] - p1[1]) / (p2[0] - p1[0])
-        for x in range(p2[0] - p1[0]):
-            for y in range(p1[1] + int(m * x), p1[1] + int(m * (x + 1))):
-                points.append((p1[0] + x, y))
-        print points
-        return points
+        x = p1[0]
+        y = p1[1]
+        
+
 
     def draw(self, pxs, color):
         for point in self.points:
@@ -58,6 +58,19 @@ class Rectangle(object):
             pxs[self.ax, self.ay + y] = color
             pxs[self.bx, self.ay + y] = color
 
+class Triangle(object):
+
+    def __init__(self, point1, point2, point3):
+        self.verts = [point1, point2, point3]
+
+    def outline(self, pxs, color):
+        for i in range(len(self.verts)):
+            Line_Seg(self.verts[i], self.verts[(i + 1) % 3]).draw(pxs, color)
+
+    def fill(self, pxs, color):
+        for point in Line(self.verts[1], self.verts[2]):
+            Line_Seg(self.verts[0], point).draw(pxs, color)
+
 class NGon(object):
 
     def __init__(self, points):
@@ -66,5 +79,6 @@ class NGon(object):
 
     def outline(self, color):
         None
+
     def fill(self, color):
         None
