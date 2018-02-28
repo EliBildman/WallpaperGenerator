@@ -24,13 +24,15 @@ class Line_Seg(object):
 
     def __find_points(self, p1, p2):
         points = []
-        m = (p2[1] - p1[1]) / (p2[0] - p1[0])
-        for x in range(p1[0], p2[0]):
+        m = float(p2[1] - p1[1]) / (p2[0] - p1[0])
+        for x in range(p2[0] - p1[0]):
             for y in range(p1[1] + int(m * x), p1[1] + int(m * (x + 1))):
-                points.append((x, y))
+                points.append((p1[0] + x, y))
+        print points
+        return points
 
     def draw(self, pxs, color):
-        for point in points:
+        for point in self.points:
             pxs[point[0], point[1]] = color
 
 
