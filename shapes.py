@@ -1,4 +1,4 @@
-from math import sin, cos, atan
+from math import sin, cos, atan, pi
 
 class Line(object):
 
@@ -21,14 +21,23 @@ class Line(object):
 class Line_Seg(object):
 
     def __init__(self, point_a, point_b):
-        self.points = self.__find_points(point_a, point_b)
+        if point_a[0] < point_b[0]:
+            self.points = self.__find_points(point_a, point_b)
+        else:
+            self.points = self.__find_points(point_b, point_a)
 
 
     def __find_points(self, p1, p2):
         points = []
-        x = p1[0]
-        y = p1[1]
-        
+        t = atan((p2[0] - p1[0]) / (p2[1] - p1[1]))
+        x = float(p1[0])
+        y = float(p1[1])
+        while x < p2[0] and y < p2[1]:
+            print x, y
+            points.append((int(x), int(y)))
+            x += cos(t)
+            y += sin(t)
+        return points
 
 
     def draw(self, pxs, color):
