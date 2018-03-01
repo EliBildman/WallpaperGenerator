@@ -29,10 +29,10 @@ class Line_Seg(object):
 
     def __find_points(self, p1, p2):
         points = []
-        t = atan((p2[0] - p1[0]) / (p2[1] - p1[1]))
+        t = atan((float(p2[1]) - p1[1]) / (p2[0] - p1[0])) if p2[0] > p1[0] else (pi/2 if p2[1] > p1[1] else -1 * pi/2)
         x = float(p1[0])
         y = float(p1[1])
-        while x < p2[0] and y < p2[1]:
+        while x < p2[0] or (p2[1] >= p1[1] and y < p2[1]) or (p2[1] < p1[1] and y > p2[1]):
             print x, y
             points.append((int(x), int(y)))
             x += cos(t)
