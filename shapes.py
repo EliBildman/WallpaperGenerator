@@ -70,11 +70,13 @@ class Triangle(object):
 
     def __init__(self, point1, point2, point3):
         self.verts = [point1, point2, point3]
-        self.lines = self.__find_lines
+        self.lines = self.__find_lines(self.verts)
 
     def __find_lines(self, verts):
+        lines = []
         for i in range(len(verts)):
-            yield Line_Seg(verts[i], verts[(i + 1) % 3]).draw(pxs, color)
+            lines.append(Line_Seg(verts[i], verts[(i + 1) % 3]))
+        return lines
 
     def outline(self, pxs, color):
         for i in range(len(self.verts)):
@@ -82,7 +84,7 @@ class Triangle(object):
 
     def fill(self, pxs, color, ignore = None):
         for i in range(len(self.verts)):
-            for point in Line_Seg(self.verts[(i + 1) % len(self.verts)], self.verts[(i + 2) % len(self.verts)]).points:
+            for point in self.lines[(i + 1) % len(self.lines)].points[1: -1]:
                 Line_Seg(self.verts[i], point).draw(pxs, color, ignore)
 
 class NGon(object):
@@ -90,9 +92,18 @@ class NGon(object):
     def __init__(self, points):
         #points = array of tuple points format (x, y) given in the order theyre connected
         self.points = points
+        self.tris = self.__find_tris(points)
 
-    def outline(self, color):
-        None
+    def __find_tris(self, points):
+        tris = []
+        for i in range(2, len(points)):
+            tris.append(Triangle(points[0], points[i - 1], points[i]))
+        return tris
 
-    def fill(self, color):
-        None
+    def outline(self, pxs, color):
+        for tri in self.tris:
+            tri.outline(pxs, color)
+
+    def fill(self, pxs, color, ignore = None):
+        for tri in self.tris:
+            tri.fill(pxs, color, ignore)

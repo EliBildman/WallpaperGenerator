@@ -1,11 +1,15 @@
 from PIL import Image
-from shapes import Line_Seg, Triangle
+from shapes import Line_Seg, Triangle, NGon
+from random import randint
 
-img = Image.new("RGBA", (100, 100), "white")
+w = 1000
+h = 1000
+img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
 
-t = Triangle((20, 20), (21, 70), (70, 50))
-t.outline(pxs, (0, 0, 0))
-img.save("outlined.png", "PNG")
-t.fill(pxs, (0, 0, 255), (0,0,0,255))
+lucas = NGon([(312, 250), (750, 250), (900, 500), (750, 750), (250, 750)])
+
+#lucas.outline(pxs, (0, 0, 0))
+#img.save("outlined.png", "PNG")
+lucas.fill(pxs, (0, 0, 255), (0, 0, 0, 255))
 img.save("filled.png", "PNG")
