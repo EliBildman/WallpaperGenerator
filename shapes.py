@@ -33,10 +33,10 @@ class Line_Seg(object):
         x = float(p1[0])
         y = float(p1[1])
         while x < p2[0] or (p2[1] >= p1[1] and y < p2[1]) or (p2[1] < p1[1] and y > p2[1]):
-            points.append((int(x), int(y)))
+            yield (int(x), int(y)))
             x += cos(t)
             y += sin(t)
-        return points
+
 
 
     def draw(self, pxs, color):
@@ -70,13 +70,20 @@ class Triangle(object):
 
     def __init__(self, point1, point2, point3):
         self.verts = [point1, point2, point3]
+        self.l1
+
+    def __find_lines(self, verts):
+        for i in range(len(verts)):
+            yield Line_Seg(verts[i], verts[(i + 1) % 3]).draw(pxs, color)
 
     def outline(self, pxs, color):
         for i in range(len(self.verts)):
             Line_Seg(self.verts[i], self.verts[(i + 1) % 3]).draw(pxs, color)
 
     def fill(self, pxs, color):
+
         for point in Line_Seg(self.verts[1], self.verts[2]).points:
+
             Line_Seg(self.verts[0], point).draw(pxs, color)
 
 class NGon(object):
