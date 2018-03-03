@@ -101,8 +101,10 @@ class NGon(object):
         return tris
 
     def outline(self, pxs, color):
+        self.tris[0].lines[0].draw(pxs, color)
+        self.tris[-1].lines[2].draw(pxs, color)
         for tri in self.tris:
-            tri.outline(pxs, color)
+            tri.lines[1].draw(pxs, color)
 
     def fill(self, pxs, color, ignore = None):
         for tri in self.tris:
