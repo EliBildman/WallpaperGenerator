@@ -22,8 +22,12 @@ class Line_Seg(object):
 
     def __init__(self, point_a, point_b):
         if point_a[0] < point_b[0]:
+            self.p1 = point_a
+            self.p2 = point_b
             self.points = self.__find_points(point_a, point_b)
         else:
+            self.p1 = point_b
+            self.p2 = point_a
             self.points = self.__find_points(point_b, point_a)
 
 
@@ -43,6 +47,11 @@ class Line_Seg(object):
             if ignore == None or pxs[point[0], point[1]] != ignore:
                 pxs[point[0], point[1]] = color
 
+    def __getitem__(self, key):
+        if self.p1[0] <= key <= self.p2[0]:
+            return self.p1[1] + ((self.p2[1] - self.p1[1]) / (self.p2[0] - self.p1[0]) * (key - self.p1[0])) if self.p2[0] - self.p1[0] > 0 else self.p1[1]
+        else:
+            raise ValueError("Access index must be between x1 and x2")
 
 class Rectangle(object):
 
