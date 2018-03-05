@@ -43,8 +43,8 @@ class Line_Seg(object):
 
     def draw(self, pxs, color = (0,0,0), thickness = 0, ignore = None):
         for point in self.points:
-            for x in range(point[0] - thickness, point[0] + thickness):
-                for y in range(point[1] - thickness, point[1] + thickness):
+            for x in range(point[0] - thickness, point[0] + thickness + 1):
+                for y in range(point[1] - thickness, point[1] + thickness + 1):
                     if  ignore == None or pxs[x, y] != ignore:
                         pxs[x, y] = color
 
@@ -108,9 +108,9 @@ class Triangle(object):
             sorted.append(points.pop(mini))
         return sorted
 
-    def outline(self, pxs, color):
-        for i in range(len(self.verts)):
-            Line_Seg(self.verts[i], self.verts[(i + 1) % 3]).draw(pxs, color)
+    def outline(self, pxs, color = (0,0,0)):
+        for line in self.lines:
+            line.draw(pxs, color = color)
 
     def fill(self, pxs, color, ignore = None):
         for i in range(len(self.verts)):
@@ -119,7 +119,7 @@ class Triangle(object):
 
     def contains_point(self, point):
         if self.verts[0][0] <= point[0] <= self.verts[2][0]:
-            if point[0] < self.verts[1]:
+            if point[0] < self.verts[1][0]:
                 return self.lines[0][point[0]] <= point[1] <= self.lines[2][point[0]] or self.lines[0][point[0]] >= point[1] >= self.lines[2][point[0]]
             else:
                 return self.lines[1][point[0]] <= point[1] <= self.lines[2][point[0]] or self.lines[1][point[0]] >= point[1] >= self.lines[2][point[0]]
@@ -137,6 +137,9 @@ class Triangle(object):
             if self.contains_point(vert):
                 return True
         return False
+
+    def __str__(self):
+        return str(self.verts)
 
 class NGon(object):
 
@@ -160,3 +163,10 @@ class NGon(object):
     def fill(self, pxs, color, ignore = None):
         for tri in self.tris:
             tri.fill(pxs, color, ignore)
+
+    def collides_with(self, other):
+        for t1 in self.tris:
+            for t2 in other.tris:
+                if t1.collides_with(t2):
+                    return True
+        return False
