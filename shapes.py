@@ -30,7 +30,6 @@ class Line_Seg(object):
             self.p2 = point_a
             self.points = self.__find_points(point_b, point_a)
 
-
     def __find_points(self, p1, p2):
         points = []
         t = atan((float(p2[1]) - p1[1]) / (p2[0] - p1[0])) if p2[0] > p1[0] else (pi/2 if p2[1] > p1[1] else -1 * pi/2)
@@ -42,16 +41,28 @@ class Line_Seg(object):
             y += sin(t)
         return points
 
-    def draw(self, pxs, color, ignore = None):
+    def draw(self, pxs, color = (0,0,0), thickness = 0, ignore = None):
         for point in self.points:
-            if ignore == None or pxs[point[0], point[1]] != ignore:
-                pxs[point[0], point[1]] = color
+            for x in range(point[0] - thickness, point[0] + thickness):
+                for y in range(point[1] - thickness, point[1] + thickness):
+                    if  ignore == None or pxs[x, y] != ignore:
+                        pxs[x, y] = color
+
+    def collides_with(self, other):
+        if self.p1[0] <= other.p2[0] and self.p2[0] >= other.p1[0]:
+            x = self.p1[0] if self.p1[0] > other.p1[0] else other.p1[0]
+            bigger_at_start = self if self[x] > other[x] else other
+            x = self.p2[0] if self.p2[0] < other.p2[0] else other.p2[0]
+            bigger_at_end = self if self[x] >= other[x] else other
+            return bigger_at_start != bigger_at_end
+        else:
+            return False
+
+    def __str__(self):
+        return str(self.p1) + "-" + str(self.p2)
 
     def __getitem__(self, key):
-        if self.p1[0] <= key <= self.p2[0]:
-            return self.p1[1] + ((self.p2[1] - self.p1[1]) / (self.p2[0] - self.p1[0]) * (key - self.p1[0])) if self.p2[0] - self.p1[0] > 0 else self.p1[1]
-        else:
-            raise ValueError("Access index must be between x1 and x2")
+        return self.p1[1] + (float(self.p2[1] - self.p1[1]) / (self.p2[0] - self.p1[0]) * (key - self.p1[0])) if self.p2[0] - self.p1[0] > 0 else self.p1[1]
 
 class Rectangle(object):
 
@@ -78,7 +89,7 @@ class Rectangle(object):
 class Triangle(object):
 
     def __init__(self, point1, point2, point3):
-        self.verts = [point1, point2, point3]
+        self.verts = self.__sort_pointsx([point1, point2, point3])
         self.lines = self.__find_lines(self.verts)
 
     def __find_lines(self, verts):
@@ -86,6 +97,16 @@ class Triangle(object):
         for i in range(len(verts)):
             lines.append(Line_Seg(verts[i], verts[(i + 1) % 3]))
         return lines
+
+    def __sort_pointsx(self, points):
+        sorted = []
+        for i in range(3):
+            mini = 0
+            for j in range(len(points)):
+                if points[j][0] < points[mini][0]:
+                    mini = j
+            sorted.append(points.pop(mini))
+        return sorted
 
     def outline(self, pxs, color):
         for i in range(len(self.verts)):
@@ -95,6 +116,27 @@ class Triangle(object):
         for i in range(len(self.verts)):
             for point in self.lines[(i + 1) % len(self.lines)].points[1: -1]:
                 Line_Seg(self.verts[i], point).draw(pxs, color, ignore)
+
+    def contains_point(self, point):
+        if self.verts[0][0] <= point[0] <= self.verts[2][0]:
+            if point[0] < self.verts[1]:
+                return self.lines[0][point[0]] <= point[1] <= self.lines[2][point[0]] or self.lines[0][point[0]] >= point[1] >= self.lines[2][point[0]]
+            else:
+                return self.lines[1][point[0]] <= point[1] <= self.lines[2][point[0]] or self.lines[1][point[0]] >= point[1] >= self.lines[2][point[0]]
+        return False
+
+    def collides_with(self, other):
+        for l1 in self.lines:
+            for l2 in other.lines:
+                if l1.collides_with(l2):
+                    return True
+        for vert in self.verts:
+            if other.contains_point(vert):
+                return True
+        for vert in other.verts:
+            if self.contains_point(vert):
+                return True
+        return False
 
 class NGon(object):
 
