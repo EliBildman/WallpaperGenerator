@@ -89,8 +89,10 @@ class Rectangle(object):
 class Triangle(object):
 
     def __init__(self, point1, point2, point3):
-        self.verts = self.__sort_pointsx([point1, point2, point3])
+        self.verts = [point1, point2, point3]
         self.lines = self.__find_lines(self.verts)
+        self.sorted_verts = self.__sort_pointsx(self.verts)
+        self.sorted_lines = self.__find_lines(self.sorted_verts)
 
     def __find_lines(self, verts):
         lines = []
@@ -103,9 +105,9 @@ class Triangle(object):
         for i in range(3):
             mini = 0
             for j in range(len(points)):
-                if points[j][0] < points[mini][0]:
+                if points[j][0] < points[mini][0] and points[j] not in sorted:
                     mini = j
-            sorted.append(points.pop(mini))
+            sorted.append(points[mini])
         return sorted
 
     def outline(self, pxs, color = (0,0,0)):
@@ -118,11 +120,11 @@ class Triangle(object):
                 Line_Seg(self.verts[i], point).draw(pxs, color, ignore)
 
     def contains_point(self, point):
-        if self.verts[0][0] <= point[0] <= self.verts[2][0]:
-            if point[0] < self.verts[1][0]:
-                return self.lines[0][point[0]] <= point[1] <= self.lines[2][point[0]] or self.lines[0][point[0]] >= point[1] >= self.lines[2][point[0]]
+        if self.sorted_verts[0][0] <= point[0] <= self.sorted_verts[2][0]:
+            if point[0] < self.sorted_verts[1][0]:
+                return self.sorted_lines[0][point[0]] <= point[1] <= self.sorted_lines[2][point[0]] or self.sorted_lines[0][point[0]] >= point[1] >= self.sorted_lines[2][point[0]]
             else:
-                return self.lines[1][point[0]] <= point[1] <= self.lines[2][point[0]] or self.lines[1][point[0]] >= point[1] >= self.lines[2][point[0]]
+                return self.sorted_lines[1][point[0]] <= point[1] <= self.sorted_lines[2][point[0]] or self.sorted_lines[1][point[0]] >= point[1] >= self.sorted_lines[2][point[0]]
         return False
 
     def collides_with(self, other):
@@ -143,10 +145,10 @@ class Triangle(object):
 
 class NGon(object):
 
-    def __init__(self, points):
+    def __init__(*args):
         #points = array of tuple points format (x, y) given in the order theyre connected
-        self.points = points
-        self.tris = self.__find_tris(points)
+        self.points = args[1:]
+        self.tris = self.__find_tris(self.points)
 
     def __find_tris(self, points):
         tris = []
@@ -154,7 +156,7 @@ class NGon(object):
             tris.append(Triangle(points[0], points[i - 1], points[i]))
         return tris
 
-    def outline(self, pxs, color):
+    def outline(self, pxs, color=(0,0,0)):
         self.tris[0].lines[0].draw(pxs, color)
         self.tris[-1].lines[2].draw(pxs, color)
         for tri in self.tris:
