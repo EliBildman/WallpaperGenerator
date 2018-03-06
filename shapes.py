@@ -146,6 +146,7 @@ class Triangle(object):
 class NGon(object):
 
     def __init__(*args):
+        self = args[0]
         #points = array of tuple points format (x, y) given in the order theyre connected
         self.points = args[1:]
         self.tris = self.__find_tris(self.points)
