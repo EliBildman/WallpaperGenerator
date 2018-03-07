@@ -1,2 +1,3 @@
-def sort_pointsx(points):
-    
+from random import randint
+
+print randint(-10, -1)
