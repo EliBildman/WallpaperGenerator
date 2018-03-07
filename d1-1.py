@@ -19,7 +19,7 @@ def convert_to_point(num, w, h):
 def nums_crossed(n1, n2, nums):
     crossed = []
     for num in nums:
-        if abs(n1) < abs(num) < abs(n2):
+        if n1 < num < n2:
             crossed.append(num)
     return crossed
 
@@ -31,7 +31,7 @@ def generate_tris(num, w, h):
     # x = randint(0, w - 2)
     # y = randint(0, h - 1)
     #nums = find_nums(num, w, h)
-    nums = [5, 750]
+    nums = [-250, 5, 750]
     for i in range(num):
         cors_crossed = nums_crossed(nums[i], nums[(i+1) % num], corners)
         if len(cors_crossed) > 0:
@@ -39,6 +39,7 @@ def generate_tris(num, w, h):
             for cor in cors_crossed:
                 verts.insert(2, convert_to_point(cor, w, h))
             shapes.append(NGon(verts))
+            #print NGon(verts)
         else:
             shapes.append(NGon((x,y), convert_to_point(nums[i], w, h), convert_to_point(nums[(i+1) % num], w, h)))
     return shapes
@@ -47,6 +48,7 @@ w = 500
 h = 500
 img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
-for t in generate_tris(1, w, h):
-    t.outline(pxs)
+tris = generate_tris(3, w, h)
+print tris[0]
+tris[0].outline(pxs)
 img.save("test.png", "PNG")

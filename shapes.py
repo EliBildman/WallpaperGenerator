@@ -173,3 +173,6 @@ class NGon(object):
                 if t1.collides_with(t2):
                     return True
         return False
+
+    def __str__(self):
+        return str(self.points)
