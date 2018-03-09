@@ -117,7 +117,7 @@ class Triangle(object):
     def fill(self, pxs, color, ignore = None):
         for i in range(len(self.verts)):
             for point in self.lines[(i + 1) % len(self.lines)].points[1: -1]:
-                Line_Seg(self.verts[i], point).draw(pxs, color, ignore)
+                Line_Seg(self.verts[i], point).draw(pxs, color, ignore=ignore)
 
     def contains_point(self, point):
         if self.sorted_verts[0][0] <= point[0] <= self.sorted_verts[2][0]:

@@ -1,6 +1,7 @@
 from shapes import NGon
 from random import randint
 from PIL import Image
+from pallet_maker import spectrum_pallet
 
 def find_nums(n, w, h):
     nums = []
@@ -19,36 +20,40 @@ def convert_to_point(num, w, h):
 def nums_crossed(n1, n2, nums):
     crossed = []
     for num in nums:
-        if n1 < num < n2:
+        if n1 <= num <= n2:
             crossed.append(num)
     return crossed
 
 def generate_tris(num, w, h):
     shapes = []
-    x = w/2
-    y = h/2
-    corners = [-1 * h + 1, 0, w - 1]
-    # x = randint(0, w - 2)
-    # y = randint(0, h - 1)
-    #nums = find_nums(num, w, h)
-    nums = [-250, 5, 750]
+    corners = [-1 * h + 1, 0, w - 1, w + h - 2]
+    x = randint(w/3, 2 * w/3)
+    y = randint(h/3, 2 * h/3)
+    nums = find_nums(num, w, h)
     for i in range(num):
-        cors_crossed = nums_crossed(nums[i], nums[(i+1) % num], corners)
+        if nums[i] < nums[(i+1) % num]:
+            cors_crossed = nums_crossed(nums[i], nums[(i+1) % num], corners)
+        else:
+            cors_crossed = nums_crossed(nums[i], w + h - 2, corners) + nums_crossed(-w - h + 2, nums[(i+1) % num], corners)
         if len(cors_crossed) > 0:
             verts = [(x,y), convert_to_point(nums[i], w, h), convert_to_point(nums[(i+1) % num], w, h)]
-            for cor in cors_crossed:
+            for cor in cors_crossed[::-1]:
                 verts.insert(2, convert_to_point(cor, w, h))
             shapes.append(NGon(verts))
-            #print NGon(verts)
         else:
             shapes.append(NGon((x,y), convert_to_point(nums[i], w, h), convert_to_point(nums[(i+1) % num], w, h)))
     return shapes
 
-w = 500
-h = 500
+w = 1920
+h = 1080
+n = 6
 img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
-tris = generate_tris(3, w, h)
-print tris[0]
-tris[0].outline(pxs)
+print "Making tris"
+tris = generate_tris(n, w, h)
+print "Making pallet"
+pallet = spectrum_pallet(n/2 + 1, 50)
+for i in range(len(tris)):
+    print "Filling tri", i+1
+    tris[i].fill(pxs, pallet[abs(n/2 - (i + 1))])
 img.save("test.png", "PNG")
