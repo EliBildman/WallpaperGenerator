@@ -46,14 +46,14 @@ def generate_tris(num, w, h):
 
 w = 1920
 h = 1080
-n = 6
-img = Image.new("RGBA", (w, h), "white")
+n = 8
+offset = randint(0, n-1)
+img = Image.new("RGBA", (w, h), "blue")
 pxs = img.load()
-print "Making tris"
 tris = generate_tris(n, w, h)
-print "Making pallet"
 pallet = spectrum_pallet(n/2 + 1, 50)
 for i in range(len(tris)):
     print "Filling tri", i+1
-    tris[i].fill(pxs, pallet[abs(n/2 - (i + 1))])
+    tris[i].fill(pxs, pallet[abs(n/2 - (((i+offset)%n) + 1))])
+pxs[w-1,h-1] = (0,0,0)
 img.save("test.png", "PNG")
