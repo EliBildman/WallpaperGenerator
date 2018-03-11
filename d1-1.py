@@ -48,12 +48,11 @@ w = 1920
 h = 1080
 n = 8
 offset = randint(0, n-1)
-img = Image.new("RGBA", (w, h), "blue")
+img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
 tris = generate_tris(n, w, h)
 pallet = spectrum_pallet(n/2 + 1, 50)
 for i in range(len(tris)):
     print "Filling tri", i+1
     tris[i].fill(pxs, pallet[abs(n/2 - (((i+offset)%n) + 1))])
-pxs[w-1,h-1] = (0,0,0)
 img.save("test.png", "PNG")

@@ -39,6 +39,10 @@ class Line_Seg(object):
             points.append((int(x), int(y)))
             x += cos(t)
             y += sin(t)
+        if p1 not in points:
+            points.insert(0, p1)
+        if p2 not in points:
+            points.append(p2)
         return points
 
     def draw(self, pxs, color = (0,0,0), thickness = 0, ignore = None):
@@ -110,14 +114,26 @@ class Triangle(object):
             sorted.append(points[mini])
         return sorted
 
+    def __extremea(self, var, ext): # var = 0: x var = 1: y, ext = 0: min ext = 1: max (sorry)
+        both = [self.verts[0], self.verts[0]]
+        for vert in self.verts:
+            if vert[var] < both[0][var]:
+                both[0] = vert
+            elif vert[var] > both[1][var]:
+                both[1] = vert
+        return both[ext][var]
+
     def outline(self, pxs, color = (0,0,0)):
         for line in self.lines:
             line.draw(pxs, color = color)
 
     def fill(self, pxs, color, ignore = None):
-        for i in range(len(self.verts)):
-            for point in self.lines[(i + 1) % len(self.lines)].points[1: -1]:
-                Line_Seg(self.verts[i], point).draw(pxs, color, ignore=ignore)
+        #print self.verts[0][0], self.verts[2][0] + 1
+        for x in range(self.__extremea(0, 0), self.__extremea(0, 1) + 1):
+            for y in range(self.__extremea(1, 0), self.__extremea(1, 1) + 1):
+                if self.contains_point((x, y)):
+                    pxs[x, y] = color
+
 
     def contains_point(self, point):
         if self.sorted_verts[0][0] <= point[0] <= self.sorted_verts[2][0]:
@@ -166,6 +182,12 @@ class NGon(object):
     def fill(self, pxs, color, ignore = None):
         for tri in self.tris:
             tri.fill(pxs, color, ignore)
+
+    def contains_point(self, point):
+        for tri in self.tris:
+            if tri.contains_point(point):
+                return True
+        return False
 
     def collides_with(self, other):
         for t1 in self.tris:
