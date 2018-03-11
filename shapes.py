@@ -114,7 +114,7 @@ class Triangle(object):
             sorted.append(points[mini])
         return sorted
 
-    def __extremea(self, var, ext): # var = 0: x var = 1: y, ext = 0: min ext = 1: max (sorry)
+    def __extrema(self, var, ext): # var = 0: x var = 1: y, ext = 0: min ext = 1: max (sorry)
         both = [self.verts[0], self.verts[0]]
         for vert in self.verts:
             if vert[var] < both[0][var]:
@@ -137,6 +137,7 @@ class Triangle(object):
 
 #TODO: FIX THIS METHOD IT'S BROKEN
     def contains_point(self, point):
+
         if self.sorted_verts[0][0] <= point[0] <= self.sorted_verts[2][0]:
             if point[0] < self.sorted_verts[1][0]:
                 return self.sorted_lines[0][point[0]] <= point[1] <= self.sorted_lines[2][point[0]] or self.sorted_lines[0][point[0]] >= point[1] >= self.sorted_lines[2][point[0]]
