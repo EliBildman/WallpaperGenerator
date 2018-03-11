@@ -135,6 +135,7 @@ class Triangle(object):
                     pxs[x, y] = color
 
 
+#TODO: FIX THIS METHOD IT'S BROKEN
     def contains_point(self, point):
         if self.sorted_verts[0][0] <= point[0] <= self.sorted_verts[2][0]:
             if point[0] < self.sorted_verts[1][0]:
