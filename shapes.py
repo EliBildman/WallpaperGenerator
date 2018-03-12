@@ -68,27 +68,6 @@ class Line_Seg(object):
     def __getitem__(self, key):
         return self.p1[1] + (float(self.p2[1] - self.p1[1]) / (self.p2[0] - self.p1[0]) * (key - self.p1[0])) if self.p2[0] - self.p1[0] > 0 else self.p1[1]
 
-class Rectangle(object):
-
-    def __init__(self, point1, point2):
-        self.ax = point1[0] #lower left
-        self.ay = point1[1]
-        self.bx = point2[0] #upper right
-        self.by = point2[1]
-
-    def collides_with(self, other):
-        return (self.ax <= other.ax <= self.bx or other.ax <= self.ax <= other.bx) and (self.ay <= other.ay <= self.by or other.ay <= self.ay <= other.by)
-
-    def contains_point(self, point):
-        return self.ax <= point[0] <= self.bx and self.ay <= point[1] <= self.by
-
-    def print_rec(self, pxs, color):
-        for x in range(self.bx - self.ax + 1):
-            pxs[self.ax + x, self.ay] = color
-            pxs[self.ax + x, self.by] = color
-        for y in range(self.by - self.ay + 1):
-            pxs[self.ax, self.ay + y] = color
-            pxs[self.bx, self.ay + y] = color
 
 class Triangle(object):
 
@@ -107,9 +86,9 @@ class Triangle(object):
     def __sort_pointsx(self, points):
         sorted = []
         for i in range(3):
-            mini = 0
+            mini = None
             for j in range(len(points)):
-                if points[j][0] < points[mini][0] and points[j] not in sorted:
+                if (mini == None or points[j][0] < points[mini][0]) and points[j] not in sorted:
                     mini = j
             sorted.append(points[mini])
         return sorted
@@ -128,18 +107,14 @@ class Triangle(object):
             line.draw(pxs, color = color)
 
     def fill(self, pxs, color, ignore = None):
-        #print self.verts[0][0], self.verts[2][0] + 1
-        for x in range(self.__extremea(0, 0), self.__extremea(0, 1) + 1):
-            for y in range(self.__extremea(1, 0), self.__extremea(1, 1) + 1):
+        for x in range(self.__extrema(0, 0), self.__extrema(0, 1) + 1):
+            for y in range(self.__extrema(1, 0), self.__extrema(1, 1) + 1):
                 if self.contains_point((x, y)):
                     pxs[x, y] = color
 
-
-#TODO: FIX THIS METHOD IT'S BROKEN
     def contains_point(self, point):
-
         if self.sorted_verts[0][0] <= point[0] <= self.sorted_verts[2][0]:
-            if point[0] < self.sorted_verts[1][0]:
+            if point[0] <= self.sorted_verts[1][0]:
                 return self.sorted_lines[0][point[0]] <= point[1] <= self.sorted_lines[2][point[0]] or self.sorted_lines[0][point[0]] >= point[1] >= self.sorted_lines[2][point[0]]
             else:
                 return self.sorted_lines[1][point[0]] <= point[1] <= self.sorted_lines[2][point[0]] or self.sorted_lines[1][point[0]] >= point[1] >= self.sorted_lines[2][point[0]]
@@ -165,7 +140,6 @@ class NGon(object):
 
     def __init__(*args):
         self = args[0]
-        #points = array of tuple points format (x, y) given in the order theyre connected
         self.points = args[1:] if len(args) > 2 else args[1]
         self.tris = self.__find_tris(self.points)
 
@@ -200,3 +174,8 @@ class NGon(object):
 
     def __str__(self):
         return str(self.points)
+
+class Rectangle(NGon):
+
+    def __init__(self, point1, point2):
+        NGon.__init__(self, point1, (point1[0], point2[1]), point2, (point2[0], point1[1]))
