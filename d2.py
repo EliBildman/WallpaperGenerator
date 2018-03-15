@@ -1,15 +1,19 @@
 from shapes import Rectangle
 from PIL import Image
 from random import randint
+import pallet_maker
 
 def points_open(w, h, recs):
     points = []
     for x in range(w):
         for y in range(h):
+            op = True
             for r in recs:
                 if r.contains_point((x, y)):
+                    op = False
                     break
-            points.append((x, y))
+            if op:
+                points.append((x, y))
     return points
 
 def in_any(shapes, point):
@@ -31,17 +35,22 @@ def find_recs(w, h, max_size):
             end = (end[0], end[1] + 1)
         end = (end[0], end[1] - 1)
         recs.append(Rectangle(point, end))
+        open_points = points_open(w, h, recs)
+        print len(open_points)
+    return recs
 
 
 
-w = 100
-h = 100
+
+w = 50
+h = 50
 
 img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
 
 recs = find_recs(w, h, w/2)
-for rec in recs:
-    rec.outline(pxs)
+pallet = pallet_maker.spectrum_pallet(len(recs), 50)
+for i in range(len(recs)):
+    recs[i].fill(pxs, pallet[i])
 
 img.save("test.png", "PNG")

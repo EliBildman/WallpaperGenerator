@@ -85,12 +85,14 @@ class Triangle(object):
 
     def __sort_pointsx(self, points):
         sorted = []
+        taken = []
         for i in range(3):
             mini = None
             for j in range(len(points)):
-                if (mini == None or points[j][0] < points[mini][0]) and points[j] not in sorted:
+                if (mini == None or points[j][0] < points[mini][0]) and j not in taken:
                     mini = j
             sorted.append(points[mini])
+            taken.append(mini)
         return sorted
 
     def __extrema(self, var, ext): # var = 0: x var = 1: y, ext = 0: min ext = 1: max (sorry)
