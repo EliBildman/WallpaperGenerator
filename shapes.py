@@ -181,3 +181,16 @@ class Rectangle(NGon):
 
     def __init__(self, point1, point2):
         NGon.__init__(self, point1, (point1[0], point2[1]), point2, (point2[0], point1[1]))
+
+class Normal(NGon):
+
+    def __init__(self, center, sides, radius = 1, rotation = 0):
+        points = []
+        for i in range(sides):
+            points.append((int(cos((2*pi / sides) * i + rotation) * radius + center[0]), int(sin((2*pi / sides) * i + rotation) * radius + center[1])))
+        NGon.__init__(self, points)
+
+class Square(Normal):
+
+    def __init__(self, center, side_len):
+        Normal.__init__(self, center, 4, side_len / 2, pi / 4)

@@ -1,16 +1,17 @@
 from PIL import Image
-from shapes import Line_Seg, Triangle, NGon, Rectangle
+import shapes
 from random import randint
+import math
 
-w = 50
-h = 50
+w = 400
+h = 400
 
 
-r = Rectangle((1,1), (25, 25))
+r = shapes.Normal((200,200), 50, 100)
 
 img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
-r.fill(pxs, (255, 0, 0))
+r.fill(pxs, (0, 0, 100))
 #pxs[49,49] = (255,0,0)
 # t1.outline(pxs)
 # t2.outline(pxs)
