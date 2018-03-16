@@ -28,9 +28,11 @@ def find_recs(w, h, min_size, max_size):
     while len(open_points) > 0:
         point = open_points[randint(0, len(open_points) - 1)]
         end = point
+        end = (end[0] + min_size, end[1])
         while not in_any(recs, end) and end[0] - point[0] <= max_size:
             end = (end[0] + min_size, end[1])
-        while (not in_any(recs, end)) and (not in_any(recs, (point[0], end[1]))) and (end[1] - point[1] <= max_size):
+        end = (end[0], end[1] + min_size)
+        while not in_any(recs, end) and not in_any(recs, (point[0], end[1])) and end[1] - point[1] <= max_size:
             end = (end[0], end[1] + min_size)
         if end[0] >= w:
             end = (w - 1, end[1])
