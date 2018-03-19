@@ -2,17 +2,22 @@ from PIL import Image
 import shapes
 from random import randint
 import math
+import pallet_maker
 
-w = 400
-h = 400
+w = 5
+h = 5
+m = 100
 
-
-r = shapes.Normal((200,200), 50, 100)
-
-img = Image.new("RGBA", (w, h), "white")
+img = Image.new("RGBA", (w * m, h * m), "white")
 pxs = img.load()
-r.fill(pxs, (0, 0, 100))
-#pxs[49,49] = (255,0,0)
-# t1.outline(pxs)
-# t2.outline(pxs)
+
+pallet = pallet_maker.mix_pallet(w * h, (255,255,255))
+
+for x in range(w * m):
+    for y in range(h * m):
+        pxs[x, y] = pallet[w * (y / m) + (x / m)]
+
+
+
+
 img.save("test.png", "PNG")
