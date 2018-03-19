@@ -6,7 +6,7 @@ import random
 def rand_squares(w, h, num, min_size, max_size):
     sqrs = []
     for i in range(num):
-        center = (random.randint(min_size / 2, w - min_size / 2 - 1), random.randint(min_size / 2, h - min_size / 2 - 1)) # why doesnt this language have do while
+        center = (random.randint(min_size / 2, w - min_size / 2 - 1), random.randint(min_size / 2, h - min_size / 2 - 1))
         side = random.randint(min_size, max_size)
         while not valid_square(w, h, center, side):
             side = random.randint(min_size, max_size)
@@ -33,7 +33,7 @@ pallet = pallet_maker.mix_pallet(num_sqrs + 1, base)
 img = Image.new("RGBA", (w, h), base)
 pxs = img.load()
 
-sqrs = rand_squares(w, h, num_sqrs, w / 5, w / 2)
+sqrs = rand_squares(w, h, num_sqrs, w / 6, w)
 j = 0
 for sqr in sqrs:
     j += 1
@@ -43,5 +43,6 @@ for sqr in sqrs:
             pxs[x, y] = pallet[num_contains((x, y), sqrs)]
 for sqr in sqrs:
     sqr.outline(pxs)
+    #pxs[sqr.center] = (0,0,0)
 
 img.save("test.png", "PNG")

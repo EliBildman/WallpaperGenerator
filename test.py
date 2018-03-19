@@ -4,19 +4,14 @@ from random import randint
 import math
 import pallet_maker
 
-w = 5
-h = 5
-m = 100
+w = 500
+h = 500
 
-img = Image.new("RGBA", (w * m, h * m), "white")
+img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
 
-pallet = pallet_maker.mix_pallet(w * h, (255,255,255))
-
-for x in range(w * m):
-    for y in range(h * m):
-        pxs[x, y] = pallet[w * (y / m) + (x / m)]
-
+s = shapes.NGon((10,10), (250, 490), (490, 490), (490, 10))
+s.outline(pxs, thickness = 2)
 
 
 
