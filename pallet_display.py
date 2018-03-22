@@ -1,14 +1,14 @@
 from PIL import Image
 import pallet_maker
+import helpers
 
-w = 5
-h = 5
+pallet = pallet_maker.similar(49, [0, 2])
+#print pallet
+h, w = helpers.most_square(len(pallet))
 m = 100
 
 img = Image.new("RGBA", (w * m, h * m), "white")
 pxs = img.load()
-
-pallet = pallet_maker.mix_pallet(w * h, (255, 20, 147))
 
 for x in range(w * m):
     for y in range(h * m):

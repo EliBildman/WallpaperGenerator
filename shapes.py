@@ -18,6 +18,15 @@ class Line(object):
                         pxs[x, y] = (0, 0, 0)
             mul += 1
 
+class Point(object):
+
+    def __init__(self, x, y):
+        self.pos = (x, y)
+        self.lines = []
+
+    def distance_to(self, other):
+        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
+
 class Line_Seg(object):
 
     def __init__(self, point_a, point_b):
@@ -56,10 +65,20 @@ class Line_Seg(object):
     def collides_with(self, other):
         if self.p1[0] <= other.p2[0] and self.p2[0] >= other.p1[0]:
             x = self.p1[0] if self.p1[0] > other.p1[0] else other.p1[0]
-            bigger_at_start = self if self[x] > other[x] else other
+            if self[x] > other[x]:
+                bigger_at_start = self
+            elif self[x] < other[x]:
+                bigger_at_start = other
+            else:
+                bigger_at_start = None
             x = self.p2[0] if self.p2[0] < other.p2[0] else other.p2[0]
-            bigger_at_end = self if self[x] >= other[x] else other
-            return bigger_at_start != bigger_at_end
+            if self[x] > other[x]:
+                bigger_at_end = self
+            elif self[x] < other[x]:
+                bigger_at_end = other
+            else:
+                bigger_at_end = None
+            return bigger_at_start != bigger_at_end and bigger_at_start != None and bigger_at_end != None
         else:
             return False
 

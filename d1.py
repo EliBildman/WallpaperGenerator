@@ -1,73 +1,61 @@
+from shapes import NGon
+from random import randint
 from PIL import Image
-from math import sin, cos, atan, pi
-from random import uniform, randint
-import sys
 import pallet_maker
-from shapes import Line
 
-def find_lines(center, vari, num):
-    lines = []
-    for x in range(num):
-        lines.append(Line(center[0], center[1], ((2 * pi / num) * x) + uniform(-vari / 2, vari / 2)))
-    return lines
-
-
-def fill_colors(thetas, pxs, width, height, ax, ay, pallet):
-    offset = randint(0, len(thetas) - 1)
-    for x in range(width):
-        for y in range(height):
-            rx = x - ax
-            ry = y - ay
-            if pxs[x, y] == (255, 255, 255, 255):
-                if rx != 0:
-                    curr_t = atan(float(ry) / rx) + (pi if rx < 0 else 0)
-                    if curr_t < 0:
-                        curr_t += 2 * pi
-                else:
-                    curr_t = (pi/2) if ry > 0 else (3 * pi/2)
-
-                mul = (pos_in(curr_t, thetas) + offset) % len(thetas)
-                pxs[x, y] = pallet[abs(len(pallet) - 1 - mul)]
-
-
-def offset(arr, n):
-    narr = []
-    for i in range(n, len(arr)):
-        narr.append(arr[i])
+def find_nums(n, w, h):
+    nums = []
     for i in range(n):
-        narr.append(arr[i])
-    return narr
+        mul = (2*(w+h) - 1) / n
+        nums.append(randint(mul * i, mul * (i+1)) - (w + h))
+    return nums
 
-def pos_in(num, arr):
-    for i in range(len(arr)):
-        if arr[i] > num:
-            return i
-    return 0
+def convert_to_point(num, w, h):
+    if num > 0:
+        return (num if num < w else w - 1, 0 if num < w else num - w + 1)
+    else:
+        num *= -1
+        return (0 if num < h else num - h + 1, num if num < h else h - 1)
 
-#-----------------------------------------------------------------------------------------------------------------------------------------------------#
+def nums_crossed(n1, n2, nums):
+    crossed = []
+    for num in nums:
+        if n1 <= num <= n2:
+            crossed.append(num)
+    return crossed
 
-# width = int(sys.argv[1])
-# height = int(sys.argv[2])
-# line_thickness = 0
-# base_name = sys.argv[3]
-# num_lines = randint(4, 8) * 2
-# num_images = int(sys.argv[4])
-# min_color_range = 50
+def generate_tris(num, w, h):
+    shapes = []
+    corners = [-1 * h + 1, 0, w - 1, w + h - 2]
+    x = randint(w/3, 2 * w/3)
+    y = randint(h/3, 2 * h/3)
+    nums = find_nums(num, w, h)
+    for i in range(num):
+        if nums[i] < nums[(i+1) % num]:
+            cors_crossed = nums_crossed(nums[i], nums[(i+1) % num], corners)
+        else:
+            cors_crossed = nums_crossed(nums[i], w + h - 2, corners) + nums_crossed(-w - h + 2, nums[(i+1) % num], corners)
+        if len(cors_crossed) > 0:
+            verts = [(x,y), convert_to_point(nums[i], w, h), convert_to_point(nums[(i+1) % num], w, h)]
+            for cor in cors_crossed[::-1]:
+                verts.insert(2, convert_to_point(cor, w, h))
+            shapes.append(NGon(verts))
+        else:
+            shapes.append(NGon((x,y), convert_to_point(nums[i], w, h), convert_to_point(nums[(i+1) % num], w, h)))
+    return shapes
 
-def create_design(width, height, line_thickness, file_name, num_lines, min_color_range):
-    img = Image.new("RGBA", (width, height), "white")
-    pxs = img.load()
-
-    ax = randint(width / 4,  3 * width / 4)
-    ay = randint(height / 4,  3 * height / 4)
-
-    lines = find_lines((ax, ay), (2*pi / num_lines) - 0.01, num_lines)
-    thetas = []
-    for l in lines:
-        l.print_line(pxs, width, height, line_thickness)
-        thetas.append(l.t)
-
-    pallet = pallet_maker.spectrum_pallet(num_lines / 2 + 1, min_color_range)
-    fill_colors(thetas, pxs, width, height, ax, ay, pallet)
-
-    img.save(file_name + ".png", "PNG")
+w = 1920
+h = 1080
+n = 14
+offset = randint(0, n-1)
+img = Image.new("RGBA", (w, h), "white")
+pxs = img.load()
+tris = generate_tris(n, w, h)
+pallet = pallet_maker.mix_pallet(n, (0,0,255))
+for i in range(len(tris)):
+    print "Filling tri", i+1
+    print tris[i]
+    #tris[i].fill(pxs, pallet[abs(n/2 - (((i+offset)%n) + 1))])
+    tris[i].fill(pxs, pallet[i])
+print pxs[1919, 500]
+img.save("test.png", "PNG")

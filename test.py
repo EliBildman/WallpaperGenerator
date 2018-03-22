@@ -3,15 +3,16 @@ import shapes
 from random import randint
 import math
 import pallet_maker
+import helpers
 
-w = 500
-h = 500
+w = 10
+h = 1
 
 img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
 
-s = shapes.NGon((10,10), (250, 490), (490, 490), (490, 10))
-s.outline(pxs, thickness = 2)
+for i in range(0, 360, 36):
+    pxs[i / 36, 0] = helpers.to_rgb((i, 1, 1))
 
 
 

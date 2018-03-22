@@ -1,1 +1,3 @@
-print (0,0,0) + (1,1,1)
+import helpers
+
+print helpers.to_rgb((60, 1, .5))
