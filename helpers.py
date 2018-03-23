@@ -1,4 +1,5 @@
 import random
+from math import sin, cos, atan, pi
 
 def comb_randint(*args):
     pos = []
@@ -16,11 +17,10 @@ def to_hsv(rgb):
     None
 
 def to_rgb(hsv):
-    h = hsv[0]
-    c = hsv[1] * hsv[2]
+    h = float(hsv[0])
+    c = float(hsv[1]) * float(hsv[2])
     x = c * (1 - abs((h / 60) % 2 - 1))
-    m = hsv[2] - c
-    print c, x, m
+    m = float(hsv[2]) - c
     rgb = ()
     if h < 60:
         rgb = (c, x, 0)
@@ -34,5 +34,22 @@ def to_rgb(hsv):
         rgb = (x, 0, c)
     else:
         rgb = (c, 0, x)
-    rgb = tuple((rgb[i] + m) * 255 for i in range(3))
+    rgb = tuple(int((rgb[i] + m) * 255) for i in range(3))
     return rgb
+
+def ang(p1, p2):
+    x = p2[0] - p1[0]
+    y = p2[1] - p1[1]
+    if x == 0:
+        return pi / 2 if y > 0 else 3 * pi / 2
+    t = float(y) / x
+    theta = atan(t)
+    if x < 0:
+        return theta + pi
+    elif y < 0:
+        return 2 * pi + theta
+    else:
+        return theta
+
+def dis(p1, p2):
+    return ((p2[1] - p1[1]) ** 2 + (p2[0] - p1[0]) ** 2) ** 0.5

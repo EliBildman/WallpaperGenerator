@@ -5,15 +5,21 @@ import math
 import pallet_maker
 import helpers
 
-w = 10
-h = 1
+w = 1000
+h = 1000
 
 img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
 
-for i in range(0, 360, 36):
-    pxs[i / 36, 0] = helpers.to_rgb((i, 1, 1))
 
+for x in range(w):
+    for y in range(h):
+        t = helpers.ang((w/2,h/2), (x, y))
+        #print t
+        t = int(t * 180 / math.pi)
+        dis = helpers.dis((w/2,h/2), (x,y))
+        maxdis = helpers.dis((0,0), (w/2, h/2))
+        pxs[x, y] = helpers.to_rgb((t, 1 - dis / maxdis, dis / maxdis))
 
 
 img.save("test.png", "PNG")

@@ -1,5 +1,5 @@
-from random import randint
-
+from random import randint, random
+import helpers
 
 def r_color():
     return tuple(randint(0, 255) for i in range(3))
@@ -49,4 +49,14 @@ def similar_pallet(n, cols):
     x = tuple(randint(0, 255) if i in cols else None for i in range(3))
     for i in range(n):
         pallet.append(tuple(randint(0, 255) if x[j] == None else x[j] for j in range(3)))
+    return pallet
+
+def spec_ops_pallet(n):
+    pallet = []
+    s = random()
+    v = random()
+    a1 = randint(0, 359)
+    for i in range(n):
+        print (a1 + (360 / n) * i, s, v)
+        pallet.append(helpers.to_rgb((a1 + (360 / n) * i, s, v)))
     return pallet
