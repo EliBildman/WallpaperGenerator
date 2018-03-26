@@ -2,7 +2,7 @@ from PIL import Image
 import pallet_maker
 import helpers
 
-pallet = pallet_maker.spec_ops_pallet(3)
+pallet = pallet_maker.monochrome_pallet(3, add_white = True)
 #print pallet
 h, w = helpers.most_square(len(pallet))
 m = 100

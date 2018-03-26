@@ -19,7 +19,7 @@ for x in range(w):
         t = int(t * 180 / math.pi)
         dis = helpers.dis((w/2,h/2), (x,y))
         maxdis = helpers.dis((0,0), (w/2, h/2))
-        pxs[x, y] = helpers.to_rgb((t, 1 - dis / maxdis, dis / maxdis))
+        pxs[x, y] = helpers.to_rgb((t, 1, 1)) if helpers.dis((w/2,h/2), (x,y)) < 500 else (0,0,0)
 
 
 img.save("test.png", "PNG")

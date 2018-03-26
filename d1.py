@@ -51,11 +51,10 @@ offset = randint(0, n-1)
 img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
 tris = generate_tris(n, w, h)
-pallet = pallet_maker.mix_pallet(n, (0,0,255))
+pallet = pallet_maker.monochrome_pallet(n, True, True)
 for i in range(len(tris)):
     print "Filling tri", i+1
     print tris[i]
     #tris[i].fill(pxs, pallet[abs(n/2 - (((i+offset)%n) + 1))])
-    tris[i].fill(pxs, pallet[i])
-print pxs[1919, 500]
+    tris[i].fill(pxs, pallet[i % len(pallet)])
 img.save("test.png", "PNG")

@@ -17,7 +17,7 @@ def to_hsv(rgb):
     None
 
 def to_rgb(hsv):
-    h = float(hsv[0])
+    h = float(hsv[0]) % 360
     c = float(hsv[1]) * float(hsv[2])
     x = c * (1 - abs((h / 60) % 2 - 1))
     m = float(hsv[2]) - c

@@ -36,7 +36,7 @@ def shift_pallet(n = 3):
         pallet.append(tuple(ocol[(i + j) % 3] for j in range(3)))
     return pallet
 
-def op_pallet(n = 2):
+def rgb_op_pallet(n = 2):
     pallet = []
     col1 = r_color()
     col2 = tuple(255 - col1[i] for i in range(3))
@@ -51,12 +51,27 @@ def similar_pallet(n, cols):
         pallet.append(tuple(randint(0, 255) if x[j] == None else x[j] for j in range(3)))
     return pallet
 
-def spec_ops_pallet(n):
+def normal_pallet(n): #creates a normal shape on the color wheel
     pallet = []
-    s = random()
-    v = random()
+    s = randint(30, 70) / 100.0
+    v = randint(30, 70) / 100.0
     a1 = randint(0, 359)
     for i in range(n):
-        print (a1 + (360 / n) * i, s, v)
-        pallet.append(helpers.to_rgb((a1 + (360 / n) * i, s, v)))
+        pallet.append(helpers.to_rgb(((a1 + (360/ n) * i) % 360, s, v)))
+    return pallet
+
+def monochrome_pallet(n, min_range = 50, add_black = False, add_white = False):
+    pallet = []
+    h = randint(0, 359)
+    av = randint(0, 100 - min_range)
+    bv = randint(av + min_range, 100) / 100.0
+    av /= 100.0
+    white = -1
+    for i in range(n):
+        pallet.append(helpers.to_rgb((h, 1, av + (bv - av) / n * i)))
+    if add_white:
+        white = randint(0, len(pallet) - 1)
+        pallet[white] = (255,255,255)
+    if add_black:
+        pallet[helpers.comb_randint((0, white - 1), (white + 1, len(pallet) - 1))] = (0,0,0)
     return pallet
