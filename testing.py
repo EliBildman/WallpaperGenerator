@@ -1,3 +1,6 @@
-import helpers
+import PIL
 
-print helpers.dis((0,0), (0,1))
+# img = Image.new("RGBA", (50,40), "white")
+# pxs = img.load()
+
+print PIL.__file__

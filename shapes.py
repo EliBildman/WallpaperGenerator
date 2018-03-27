@@ -53,13 +53,14 @@ class Line_Seg(object):
             points.append(p2)
         return points
 
-    def draw(self, pxs, color = (0,0,0), thickness = 0, ignore = None):
+    def draw(self, pxs, color = (0,0,0), dems = None, thickness = 0, ignore = None):
+        print self
         if self.points == None:
             self.points = self.__find_points(self.p1, self.p2)
         for point in self.points:
             for x in range(point[0] - thickness, point[0] + thickness + 1):
                 for y in range(point[1] - thickness, point[1] + thickness + 1):
-                    if  ignore == None or pxs[x, y] != ignore:
+                    if  (ignore == None or pxs[x, y] != ignore) and (dems == None or (0 <= x < dems[0] and 0 <= y < dems[1])):
                         pxs[x, y] = color
 
     def collides_with(self, other):
@@ -124,14 +125,14 @@ class Triangle(object):
                 both[1] = vert
         return both[ext][var]
 
-    def outline(self, pxs, thickness = 0, color = (0,0,0)):
+    def outline(self, pxs, thickness = 0, dems = None, color = (0,0,0)):
         for line in self.lines:
-            line.draw(pxs, thickness = thickness, color = color)
+            line.draw(pxs, thickness = thickness, dems = dems, color = color)
 
-    def fill(self, pxs, color, ignore = None):
+    def fill(self, pxs, color, dems = None, ignore = None):
         for x in range(self.__extrema(0, 0), self.__extrema(0, 1) + 1):
             for y in range(self.__extrema(1, 0), self.__extrema(1, 1) + 1):
-                if self.contains_point((x, y)):
+                if self.contains_point((x, y)) and (dems == None or (0 <= x < dems[0] and 0 <= y < dems[1])):
                     pxs[x, y] = color
 
     def contains_point(self, point):
@@ -171,15 +172,15 @@ class NGon(object):
             tris.append(Triangle(points[0], points[i - 1], points[i]))
         return tris
 
-    def outline(self, pxs, thickness = 0, color = (0,0,0)):
+    def outline(self, pxs, dems = None, thickness = 0, color = (0,0,0)):
         self.tris[0].lines[0].draw(pxs, thickness = thickness, color = color)
         self.tris[-1].lines[2].draw(pxs, thickness = thickness, color = color)
         for tri in self.tris:
-            tri.lines[1].draw(pxs, thickness = thickness, color = color)
+            tri.lines[1].draw(pxs, thickness = thickness, dems = dems, color = color)
 
-    def fill(self, pxs, color = (0,0,0), ignore = None):
+    def fill(self, pxs, color = (0,0,0), dems = None, ignore = None):
         for tri in self.tris:
-            tri.fill(pxs, color, ignore)
+            tri.fill(pxs, color, dems, ignore)
 
     def contains_point(self, point):
         for tri in self.tris:
