@@ -210,6 +210,7 @@ class Normal(NGon):
         for i in range(sides):
             points.append((int(cos((2*pi / sides) * i + rotation) * radius + center[0]), int(sin((2*pi / sides) * i + rotation) * radius + center[1])))
         self.center = center
+        self.r = radius
         NGon.__init__(self, points)
 
 class Square(Normal):
