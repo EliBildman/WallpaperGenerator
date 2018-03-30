@@ -54,7 +54,6 @@ class Line_Seg(object):
         return points
 
     def draw(self, pxs, color = (0,0,0), dems = None, thickness = 0, ignore = None):
-        print self
         if self.points == None:
             self.points = self.__find_points(self.p1, self.p2)
         for point in self.points:
@@ -173,13 +172,14 @@ class NGon(object):
         return tris
 
     def outline(self, pxs, dems = None, thickness = 0, color = (0,0,0)):
-        self.tris[0].lines[0].draw(pxs, thickness = thickness, color = color)
-        self.tris[-1].lines[2].draw(pxs, thickness = thickness, color = color)
+        self.tris[0].lines[0].draw(pxs, thickness = thickness, dems = dems, color = color)
+        self.tris[-1].lines[2].draw(pxs, thickness = thickness, dems = dems, color = color)
         for tri in self.tris:
             tri.lines[1].draw(pxs, thickness = thickness, dems = dems, color = color)
 
     def fill(self, pxs, color = (0,0,0), dems = None, ignore = None):
         for tri in self.tris:
+            #print "filling" + str(tri)
             tri.fill(pxs, color, dems, ignore)
 
     def contains_point(self, point):

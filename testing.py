@@ -1,6 +1,12 @@
 import shapes
+from PIL import Image
 
-sqr = shapes.Square((10,10), 1237012)
-w = 50
-h = 50
-print 0 > sqr.center[0] - sqr.r and w <= sqr.center[0] + sqr.r and 0 >= sqr.center[1] - sqr.r and h <= sqr.center[1] + sqr.r
+
+w = 5000
+h = 5000
+img = Image.new("RGBA", (w, h), "white")
+pxs = img.load()
+s = shapes.Square((2500, 2500), 5000)
+s.fill(pxs, dems = (w, h), color = (0,0,255))
+s.outline(pxs, dems = (w, h))
+img.save("test.png", "PNG")
