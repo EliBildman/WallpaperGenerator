@@ -76,13 +76,12 @@ def monochrome_pallet(n, min_range = 100, add_black = False, add_white = False):
         pallet[helpers.comb_randint((0, white - 1), (white + 1, len(pallet) - 1))] = (0,0,0)
     return pallet
 
-def close_pallet(n, step = None):
+def close_pallet(n, r = 120):
     pallet = []
     ah = randint(0, 359)
     s = randint(30, 70) / 100.0
     v = randint(30, 70) / 100.0
-    if step == None:
-        step = randint(20, 40)
+    step = r/n
     for i in range(n):
         pallet.append(helpers.to_rgb((ah + step * i, s, v)))
     return pallet
