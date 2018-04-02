@@ -60,7 +60,7 @@ def normal_pallet(n): #creates a normal shape on the color wheel
         pallet.append(helpers.to_rgb(((a1 + (360/ n) * i) % 360, s, v)))
     return pallet
 
-def monochrome_pallet(n, min_range = 50, add_black = False, add_white = False):
+def monochrome_pallet(n, min_range = 100, add_black = False, add_white = False):
     pallet = []
     h = randint(0, 359)
     av = randint(0, 100 - min_range)
@@ -82,7 +82,7 @@ def close_pallet(n, step = None):
     s = randint(30, 70) / 100.0
     v = randint(30, 70) / 100.0
     if step == None:
-        step = randint(40, 60)
+        step = randint(20, 40)
     for i in range(n):
         pallet.append(helpers.to_rgb((ah + step * i, s, v)))
     return pallet

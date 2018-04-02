@@ -216,4 +216,5 @@ class Normal(NGon):
 class Square(Normal):
 
     def __init__(self, center, side_len):
-        Normal.__init__(self, center, 4, side_len / 2, pi / 4)
+        self.l = side_len
+        Normal.__init__(self, center, 4, side_len / (2 ** 0.5), pi / 4)
