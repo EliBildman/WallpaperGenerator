@@ -32,6 +32,19 @@ def random_edge_points(n, w, h):
         points[i] = convert_to_point(points[i], w, h)
     return points
 
+def r_sym_edge_points(w, h):
+    max = 10
+    points = [(0,0), (0,h-1), (w-1, h-1), (w-1,0)]
+    hor = randint(0, int(float(w) / (w + h) * 10))
+    ver = randint(0, int(float(h) / (w + h) * 10))
+    # hor = 1
+    # ver = 12
+    for i in range(1, hor + 1):
+        points += [(w / (hor + 1) * i, 0), (w / (hor + 1) * i, h - 1)]
+    for i in range(1, ver + 1):
+        points += [(0, h / (ver + 1) * i), (w - 1, h / (ver + 1) * i)]
+    return points
+
 def connect_points(points):
     lines = []
     for j in range(len(points)):
@@ -60,12 +73,12 @@ h = 500
 img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
 
-points = random_edge_points(10, w, h)
+points = r_sym_edge_points(w, h)
 # lines = connect_points(points)
 # for l in lines:
 #     l.draw(pxs, thickness = 2)
 for i in range(len(points)):
     for j in range(len(points)):
-        Line_Seg(points[i], points[j]).draw(pxs, dems = (w, h), thickness = 1)
+        Line_Seg(points[i], points[j]).draw(pxs, dems = (w, h), thickness = 0)
 
 img.save("test.png", "PNG")
