@@ -1,4 +1,5 @@
 from math import sin, cos, atan, pi
+import sys
 
 class Line(object):
 
@@ -36,6 +37,7 @@ class Line_Seg(object):
         else:
             self.p1 = point_b
             self.p2 = point_a
+        self.m = (self.p2[1] - self.p1[1]) / (self.p2[0] - self.p1[0]) if self.p1[0] != self.p2[0] else (sys.maxint if (self.p2[1] - self.p1[1]) > 0 else -sys.maxint)
         self.points = None
 
     def __find_points(self, p1, p2):
@@ -81,6 +83,13 @@ class Line_Seg(object):
             return bigger_at_start != bigger_at_end and bigger_at_start != None and bigger_at_end != None
         else:
             return False
+
+    def collision_point(self, other):
+        x = (float(self.m) * self.p1[0] - self.p1[1] - (other.m * other.p1[0] - other.p1[1])) / (self.m - other.m)
+        if self.p1[0] <= x <= self.p2[0] and other.p1[0] <= x <= other.p2[0]:
+            return (x, y)
+        else:
+            return None
 
     def __str__(self):
         return str(self.p1) + "-" + str(self.p2)

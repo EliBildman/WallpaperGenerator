@@ -33,7 +33,7 @@ def random_edge_points(n, w, h):
     return points
 
 def r_sym_edge_points(w, h):
-    max = 10
+    max = 8
     points = [(0,0), (0,h-1), (w-1, h-1), (w-1,0)]
     hor = randint(0, int(float(w) / (w + h) * 10))
     ver = randint(0, int(float(h) / (w + h) * 10))
