@@ -37,7 +37,7 @@ class Line_Seg(object):
         else:
             self.p1 = point_b
             self.p2 = point_a
-        self.m = (self.p2[1] - self.p1[1]) / (self.p2[0] - self.p1[0]) if self.p1[0] != self.p2[0] else (sys.maxint if (self.p2[1] - self.p1[1]) > 0 else -sys.maxint)
+        self.m = float(self.p2[1] - self.p1[1]) / (self.p2[0] - self.p1[0]) if self.p1[0] != self.p2[0] else (sys.maxint if (self.p2[1] - self.p1[1]) > 0 else -sys.maxint)
         self.points = None
 
     def __find_points(self, p1, p2):
@@ -65,29 +65,14 @@ class Line_Seg(object):
                         pxs[x, y] = color
 
     def collides_with(self, other):
-        if self.p1[0] <= other.p2[0] and self.p2[0] >= other.p1[0]:
-            x = self.p1[0] if self.p1[0] > other.p1[0] else other.p1[0]
-            if self[x] > other[x]:
-                bigger_at_start = self
-            elif self[x] < other[x]:
-                bigger_at_start = other
-            else:
-                bigger_at_start = None
-            x = self.p2[0] if self.p2[0] < other.p2[0] else other.p2[0]
-            if self[x] > other[x]:
-                bigger_at_end = self
-            elif self[x] < other[x]:
-                bigger_at_end = other
-            else:
-                bigger_at_end = None
-            return bigger_at_start != bigger_at_end and bigger_at_start != None and bigger_at_end != None
-        else:
-            return False
+        return self.collision_point(other) != None
 
     def collision_point(self, other):
-        x = (float(self.m) * self.p1[0] - self.p1[1] - (other.m * other.p1[0] - other.p1[1])) / (self.m - other.m)
+        if self.m == other.m:
+            return None
+        x = (self.m * self.p1[0] - self.p1[1] - (other.m * other.p1[0] - other.p1[1])) / (self.m - other.m)
         if self.p1[0] <= x <= self.p2[0] and other.p1[0] <= x <= other.p2[0]:
-            return (x, y)
+            return (x, self[x])
         else:
             return None
 

@@ -51,7 +51,7 @@ offset = randint(0, n-1)
 img = Image.new("RGBA", (w, h), "white")
 pxs = img.load()
 tris = generate_tris(n, w, h)
-pallet = pallet_maker.monochrome_pallet(n, True, True)
+pallet = pallet_maker.mix_pallet(n)
 for i in range(len(tris)):
     print "Filling tri", i+1
     print tris[i]

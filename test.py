@@ -5,21 +5,23 @@ import math
 import pallet_maker
 import helpers
 
-w = 1000
-h = 1000
+w = 100
+h = 100
 
-img = Image.new("RGBA", (w, h), "white")
-pxs = img.load()
+a = shapes.Line_Seg((0,1), (100,99))
+b = shapes.Line_Seg((0,99), (100,1))
+c = shapes.Line_Seg((0,21), (100,79))
+d = shapes.Line_Seg((0,79), (100,21))
 
+# img = Image.new("RGBA", (w, h), "white")
+# pxs = img.load()
+# a.draw(pxs, dems = (w, h), thickness = 1)
+# b.draw(pxs, dems = (w, h), thickness = 1)
+# c = a.collision_point(b)
+# if c != None:
+#     print "yes"
+#     pxs[c] = (255,0,0)
+# img.save("test.png", "PNG")
 
-for x in range(w):
-    for y in range(h):
-        t = helpers.ang((w/2,h/2), (x, y))
-        #print t
-        t = int(t * 180 / math.pi)
-        dis = helpers.dis((w/2,h/2), (x,y))
-        maxdis = helpers.dis((0,0), (w/2, h/2))
-        pxs[x, y] = helpers.to_rgb((t, 1, 1)) if helpers.dis((w/2,h/2), (x,y)) < 500 else (0,0,0)
-
-
-img.save("test.png", "PNG")
+print a.collision_point(b)
+print c.collision_point(d)

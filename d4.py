@@ -33,10 +33,10 @@ def random_edge_points(n, w, h):
     return points
 
 def r_sym_edge_points(w, h):
-    max = 8
+    max = 6
     points = [(0,0), (0,h-1), (w-1, h-1), (w-1,0)]
-    hor = randint(0, int(float(w) / (w + h) * 10))
-    ver = randint(0, int(float(h) / (w + h) * 10))
+    hor = randint(1, int(float(w) / (w + h) * 10))
+    ver = randint(1, int(float(h) / (w + h) * 10))
     # hor = 1
     # ver = 12
     for i in range(1, hor + 1):
@@ -77,8 +77,20 @@ points = r_sym_edge_points(w, h)
 # lines = connect_points(points)
 # for l in lines:
 #     l.draw(pxs, thickness = 2)
+lines = []
 for i in range(len(points)):
-    for j in range(len(points)):
-        Line_Seg(points[i], points[j]).draw(pxs, dems = (w, h), thickness = 0)
+    for j in range(i, len(points)):
+        lines.append(Line_Seg(points[i], points[j]))
+        lines[-1].draw(pxs)
+cols = []
+for i in range(len(lines)):
+    for j in range(i, len(lines)):
+        c = lines[i].collision_point(lines[j])
+        c = (int(c[0]), int(c[1])) if c != None else None
+        if c != None and c not in cols:
+            cols.append(c)
+for c in cols:
+    pxs[c] = (255, 0, 0)
+#print cols
 
 img.save("test.png", "PNG")
