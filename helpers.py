@@ -53,3 +53,9 @@ def ang(p1, p2):
 
 def dis(p1, p2):
     return ((p2[1] - p1[1]) ** 2 + (p2[0] - p1[0]) ** 2) ** 0.5
+
+def any_within(num, range, arr):
+    for x in arr:
+        if abs(num - x) <= range:
+            return True
+    return False
