@@ -39,7 +39,7 @@ def r_sym_edge_points(w, h):
     points = [(0,0), (0,h-1), (w-1, h-1), (w-1,0)]
     # hor = randint(1, int(float(w) / (w + h) * 10))
     # ver = randint(1, int(float(h) / (w + h) * 10))
-    hor = 2
+    hor = 1
     ver = 1
     # hor = 1
     # ver = 12
@@ -85,7 +85,6 @@ lines = []
 for i in range(len(points)):
     for j in range(i, len(points)):
         lines.append(Line_Seg(points[i], points[j]))
-        lines[-1].draw(pxs)
 # cols = []
 # for i in range(len(lines)):
 #     for j in range(i, len(lines)):
@@ -94,14 +93,15 @@ for i in range(len(points)):
 #             cols.append((int(c[0]), int(c[1])))
 # for c in cols:
 #     pxs[c] = (255, 0, 0)
-n = 10
-pallet = pallet_maker.mix_pallet(n)
+n = 20
+pallet = pallet_maker.close_pallet(n)
 for x in range(w):
     for y in range(h):
         #if pxs[x, y] != (0,0,0,255):
         pxs[x,y] = pallet[helpers.lines_crossed(lines, (x, 0), (x, y)) % n]
-    print x
-
+    #print x
+for l in lines:
+	l.draw(pxs, thickness = 1, dems = (w, h))
 
 #print cols
 
