@@ -1,6 +1,8 @@
 from shapes import Point, Line_Seg
 from random import randint
 from PIL import Image
+import helpers
+import pallet_maker
 
 def random_points(w, h, avg_dis, variance):
     points = []
@@ -35,8 +37,10 @@ def random_edge_points(n, w, h):
 def r_sym_edge_points(w, h):
     max = 6
     points = [(0,0), (0,h-1), (w-1, h-1), (w-1,0)]
-    hor = randint(1, int(float(w) / (w + h) * 10))
-    ver = randint(1, int(float(h) / (w + h) * 10))
+    # hor = randint(1, int(float(w) / (w + h) * 10))
+    # ver = randint(1, int(float(h) / (w + h) * 10))
+    hor = 2
+    ver = 1
     # hor = 1
     # ver = 12
     for i in range(1, hor + 1):
@@ -82,15 +86,23 @@ for i in range(len(points)):
     for j in range(i, len(points)):
         lines.append(Line_Seg(points[i], points[j]))
         lines[-1].draw(pxs)
-cols = []
-for i in range(len(lines)):
-    for j in range(i, len(lines)):
-        c = lines[i].collision_point(lines[j])
-        c = (int(c[0]), int(c[1])) if c != None else None
-        if c != None and c not in cols:
-            cols.append(c)
-for c in cols:
-    pxs[c] = (255, 0, 0)
+# cols = []
+# for i in range(len(lines)):
+#     for j in range(i, len(lines)):
+#         c = lines[i].collision_point(lines[j])
+#         if c != None:
+#             cols.append((int(c[0]), int(c[1])))
+# for c in cols:
+#     pxs[c] = (255, 0, 0)
+n = 10
+pallet = pallet_maker.mix_pallet(n)
+for x in range(w):
+    for y in range(h):
+        if pxs[x, y] != (0,0,0,255):
+            pxs[x,y] = pallet[helpers.lines_crossed(lines, (x, 0), (x, y)) % n]
+    print x
+
+
 #print cols
 
 img.save("test.png", "PNG")

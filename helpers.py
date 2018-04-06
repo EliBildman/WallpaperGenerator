@@ -59,3 +59,10 @@ def any_within(num, range, arr):
         if abs(num - x) <= range:
             return True
     return False
+
+def lines_crossed(lines, p1, p2):
+    crossed = 0
+    for l in lines:
+        if (p1[1] - l[p1[0]]) * (p2[1] - l[p2[0]]) <= 0:
+            crossed += 1
+    return crossed
