@@ -98,8 +98,8 @@ n = 10
 pallet = pallet_maker.mix_pallet(n)
 for x in range(w):
     for y in range(h):
-        if pxs[x, y] != (0,0,0,255):
-            pxs[x,y] = pallet[helpers.lines_crossed(lines, (x, 0), (x, y)) % n]
+        #if pxs[x, y] != (0,0,0,255):
+        pxs[x,y] = pallet[helpers.lines_crossed(lines, (x, 0), (x, y)) % n]
     print x
 
 
