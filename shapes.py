@@ -26,7 +26,7 @@ class Point(object):
         self.lines = []
 
     def distance_to(self, other):
-        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
+        return ((self.pos[0] - other.pos[0]) ** 2 + (self.pos[1] - other.pos[1]) ** 2) ** 0.5
 
 class Line_Seg(object):
 
@@ -37,7 +37,7 @@ class Line_Seg(object):
         else:
             self.p1 = point_b
             self.p2 = point_a
-        self.m = float(self.p2[1] - self.p1[1]) / (self.p2[0] - self.p1[0]) if self.p1[0] != self.p2[0] else (sys.maxint if (self.p2[1] - self.p1[1]) > 0 else -sys.maxint)
+        self.m = int(self.p2[1] - self.p1[1]) / (self.p2[0] - self.p1[0]) if self.p1[0] != self.p2[0] else (10000000 if (self.p2[1] - self.p1[1]) > 0 else -10000000)
         self.points = None
 
     def __find_points(self, p1, p2):
@@ -154,9 +154,11 @@ class Triangle(object):
 
 class NGon(object):
 
-    def __init__(*args):
-        self = args[0]
-        self.points = args[1:] if len(args) > 2 else args[1]
+    tris = []
+    points = []
+
+    def __init__(self, *args):
+        self.points = args if len(args) > 2 else args[0]
         self.tris = self.__find_tris(self.points)
 
     def __find_tris(self, points):

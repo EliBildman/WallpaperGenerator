@@ -1,48 +1,47 @@
-from PIL import Image
-import pallet_maker
 import shapes
+import pallet_maker
 import random
+import helpers
+from PIL import Image
 
-def rand_squares(w, h, num, min_size, max_size):
+
+def find_sqrs(w, h):
     sqrs = []
-    for i in range(num):
-        center = (random.randint(min_size / 2, w - min_size / 2 - 1), random.randint(min_size / 2, h - min_size / 2 - 1))
-        side = random.randint(min_size, max_size)
-        while not valid_square(w, h, center, side):
-            side = random.randint(min_size, max_size)
-        sqrs.append(shapes.Square(center, side))
-    return sqrs
+    s = w/100
+    last = None
+    mul = (random.random() / 2 + 1.5)
+    offa = tuple((random.random() * 1.6 - 0.8) for i in range(2))
+    while len(sqrs) == 0 or not fills_screen(w, h, last) and not off_screen(w, h, last):
+        pos = (random.randint(w/3, 2*w/3), random.randint(h/3, 2*h/3)) if len(sqrs) == 0 else last.center
+        s *= mul
+        #s = int(s * (random.random() * 2 + 1.5))
+        #offset = tuple(random.randint((-1 * (s/2 - last.s/2)) * 2/3, (s/2 - last.s/2) * 2/3) for i in range(2)) if len(sqrs) > 0 else (0,0)
+        offset = tuple((offa[i] * (s/2 - last.s/2)) for i in range(2)) if last != None else (0,0)
+        #print offa
+        sqrs.append(shapes.Square((pos[0] + offset[0], pos[1] + offset[1]), s))
+        last = sqrs[-1]
+    return sqrs[:-1]
 
-def num_contains(point, shapes):
-    num = 0
-    for shape in shapes:
-        if shape.contains_point(point):
-            num += 1
-    return num
 
-def valid_square(w, h, center, side):
-    r = side / 2
-    return 0 <= center[0] - r and center[0] + r < w and 0 <= center[1] - r and center[1] + r < h
+def fills_screen(w, h, sqr):
+    return 0 > sqr.center[0] - (sqr.s / 2) and w <= sqr.center[0] + (sqr.s / 2) and 0 >= sqr.center[1] - (sqr.s / 2) and h <= sqr.center[1] + (sqr.s / 2)
 
-w = 500
-h = 500
-num_sqrs = 20
+def off_screen(w, h, sqr):
+    return 0 > sqr.center[0] + (sqr.s / 2) or sqr.center[0] - (sqr.s / 2) >= w or 0 > sqr.center[1] + (sqr.s / 2) or sqr.center[1] - (sqr.s / 2) >= h
 
-base = pallet_maker.r_color()
-pallet = pallet_maker.mix_pallet(num_sqrs + 1, base)
-img = Image.new("RGBA", (w, h), base)
-pxs = img.load()
+def generate(size, savepath):
+    w = size[0]
+    h = size[1]
+    ss = find_sqrs(w, h)
+    p = pallet_maker.monochrome_pallet(len(ss) + 1)
+    img = Image.new("RGBA", (w, h), p[0])
+    pxs = img.load()
+    i = 1
+    for s in ss[::-1]:
+        # print str(i) + "/" + str(len(ss))
+        s.fill(pxs, dems = (w, h), color = p[i])
+        #s.outline(pxs, dems = (w, h), thickness = int(s.r ** 0.5) / 4)
+        i += 1
 
-sqrs = rand_squares(w, h, num_sqrs, w / 6, w)
-j = 0
-for sqr in sqrs:
-    j += 1
-    print float(j) / num_sqrs * 100, "%"
-    for x in range(sqr.points[2][0], sqr.points[0][0]):
-        for y in range(sqr.points[2][1], sqr.points[0][1]):
-            pxs[x, y] = pallet[num_contains((x, y), sqrs)]
-for sqr in sqrs:
-    sqr.outline(pxs)
-    #pxs[sqr.center] = (0,0,0)
-
-img.save("test.png", "PNG")
+    img.save(savepath, "PNG")
+    print('Done')

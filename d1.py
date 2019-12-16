@@ -7,7 +7,7 @@ def find_nums(n, w, h):
     nums = []
     for i in range(n):
         mul = (2*(w+h) - 1) / n
-        nums.append(randint(mul * i, mul * (i+1)) - (w + h))
+        nums.append(randint(int(mul * i), int(mul * (i+1))) - (w + h))
     return nums
 
 def convert_to_point(num, w, h):
@@ -27,8 +27,8 @@ def nums_crossed(n1, n2, nums):
 def generate_tris(num, w, h):
     shapes = []
     corners = [-1 * h + 1, 0, w - 1, w + h - 2]
-    x = randint(w/3, 2 * w/3)
-    y = randint(h/3, 2 * h/3)
+    x = randint(int(w/3), int(2 * w/3))
+    y = randint(int(h/3), int(2 * h/3))
     nums = find_nums(num, w, h)
     for i in range(num):
         if nums[i] < nums[(i+1) % num]:
@@ -44,17 +44,16 @@ def generate_tris(num, w, h):
             shapes.append(NGon((x,y), convert_to_point(nums[i], w, h), convert_to_point(nums[(i+1) % num], w, h)))
     return shapes
 
-w = 1920
-h = 1080
-n = 14
-offset = randint(0, n-1)
-img = Image.new("RGBA", (w, h), "white")
-pxs = img.load()
-tris = generate_tris(n, w, h)
-pallet = pallet_maker.mix_pallet(n)
-for i in range(len(tris)):
-    print "Filling tri", i+1
-    print tris[i]
-    #tris[i].fill(pxs, pallet[abs(n/2 - (((i+offset)%n) + 1))])
-    tris[i].fill(pxs, pallet[i % len(pallet)])
-img.save("test.png", "PNG")
+def generate(size, savepath):
+    w = size[0]
+    h = size[1]
+    n = 14
+    img = Image.new("RGBA", (w, h), "white")
+    pxs = img.load()
+    tris = generate_tris(n, w, h)
+    pallet = pallet_maker.close_pallet(int(n / 2 + 1))
+    for i in range(len(tris)):
+        tris[i].fill(pxs, pallet[abs(int(n / 2 - i))])
+    img.save(savepath, "PNG")
+    print('Done')
+    
